@@ -1,0 +1,249 @@
+name: Build Release
+
+on:
+  push:
+    branches:
+      - main  # Change this to your main branch name
+  pull_request:
+    branches:
+      - main  # Change this to your main branch name
+
+jobs:
+  build-linux-x86:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build Linux x86 binary
+        run: |
+          pyinstaller --onefile --architecture x86 yml2jopts.py
+        working-directory: ${{ github.workspace }}
+
+      - name: Archive Linux x86 binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-x86-binary
+          path: dist/yml2jopts
+
+  build-linux-arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build Linux ARM64 binary
+        run: |
+          pyinstaller --onefile --architecture arm64 yml2jopts.py
+        working-directory: ${{ github.workspace }}
+
+      - name: Archive Linux ARM64 binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-arm64-binary
+          path: dist/yml2jopts
+
+  build-windows-x86:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build Windows x86 binary
+        run: |
+          pyinstaller --onefile --architecture x86 yml2jopts.py
+        working-directory: ${{ github.workspace }}
+
+      - name: Archive Windows x86 binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-x86-binary
+          path: dist/yml2jopts.exe
+
+  build-windows-arm64:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build Windows ARM64 binary
+        run: |
+          pyinstaller --onefile --architecture arm64 yml2jopts.py
+        working-directory: ${{ github.workspace }}
+
+      - name: Archive Windows ARM64 binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: windows-arm64-binary
+          path: dist/yml2jopts.exe
+
+  build-macos-x86:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build macOS x86 binary
+        run: |
+          pyinstaller --onefile --architecture x86 yml2jopts.py
+        working-directory: ${{ github.workspace }}
+
+      - name: Archive macOS x86 binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-x86-binary
+          path: dist/yml2jopts
+
+  build-macos-arm64:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Build macOS ARM64 binary
+        run: |
+          pyinstaller --onefile --architecture arm64 yml2jopts.py
+        working-directory: ${{ github.workspace }}
+
+      - name: Archive macOS ARM64 binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-arm64-binary
+          path: dist/yml2jopts
+
+  create-release:
+    needs: [build-linux-x86, build-linux-arm64, build-windows-x86, build-windows-arm64, build-macos-x86, build-macos-arm64]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.0  # Change this to your desired tag name
+          release_name: Release v1.0.0  # Change this to your desired release name
+          body: |
+            Describe your release here
+          draft: false
+          prerelease: false
+
+      - name: Upload Linux x86 binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/yml2jopts
+          asset_name: yml2jopts-linux-x86
+          asset_content_type: application/octet-stream
+
+      - name: Upload Linux ARM64 binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/yml2jopts
+          asset_name: yml2jopts-linux-arm64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows x86 binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/yml2jopts.exe
+          asset_name: yml2jopts-windows-x86.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Windows ARM64 binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/yml2jopts.exe
+          asset_name: yml2jopts-windows-arm64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS x86 binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/yml2jopts
+          asset_name: yml2jopts-macos-x86
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS ARM64 binary to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/yml2jopts
+          asset_name: yml2jopts-macos-arm64
+          asset_content_type: application/octet-stream
