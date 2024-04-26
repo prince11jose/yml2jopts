@@ -27,7 +27,7 @@ jobs:
 
       - name: Build Linux x86 binary
         run: |
-          pyinstaller --onefile --architecture x86 yml2jopts.py
+          pyinstaller --onefile yml2jopts.py
         working-directory: ${{ github.workspace }}
 
       - name: Archive Linux x86 binary
@@ -54,7 +54,7 @@ jobs:
 
       - name: Build Linux ARM64 binary
         run: |
-          pyinstaller --onefile --architecture arm64 yml2jopts.py
+          pyinstaller --onefile yml2jopts.py
         working-directory: ${{ github.workspace }}
 
       - name: Archive Linux ARM64 binary
@@ -81,7 +81,7 @@ jobs:
 
       - name: Build Windows x86 binary
         run: |
-          pyinstaller --onefile --architecture x86 yml2jopts.py
+          pyinstaller --onefile yml2jopts.py
         working-directory: ${{ github.workspace }}
 
       - name: Archive Windows x86 binary
@@ -108,7 +108,7 @@ jobs:
 
       - name: Build Windows ARM64 binary
         run: |
-          pyinstaller --onefile --architecture arm64 yml2jopts.py
+          pyinstaller --onefile yml2jopts.py
         working-directory: ${{ github.workspace }}
 
       - name: Archive Windows ARM64 binary
@@ -135,7 +135,7 @@ jobs:
 
       - name: Build macOS x86 binary
         run: |
-          pyinstaller --onefile --architecture x86 yml2jopts.py
+          pyinstaller --onefile yml2jopts.py
         working-directory: ${{ github.workspace }}
 
       - name: Archive macOS x86 binary
@@ -162,7 +162,7 @@ jobs:
 
       - name: Build macOS ARM64 binary
         run: |
-          pyinstaller --onefile --architecture arm64 yml2jopts.py
+          pyinstaller --onefile yml2jopts.py
         working-directory: ${{ github.workspace }}
 
       - name: Archive macOS ARM64 binary
