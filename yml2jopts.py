@@ -1,9 +1,31 @@
+"""
+Title: YML to Java Options Converter
+
+Author: Prince Jose
+Email: prince11jose@hotmail.com
+Date Created: 2024-04-26
+Last Modified: 2024-06-15
+Description: This script converts YAML configuration files into Java command-line options.
+             It removes comments from the YAML file before processing and handles nested
+             dictionaries by flattening the keys.
+
+Usage:
+    python yml2opts.py <yaml_file>
+
+Dependencies:
+    - PyYAML
+
+License: MIT License
+"""
+
 import sys
 import yaml
+
 def load_yaml(file_path):
     with open(file_path, 'r') as file:
         content = yaml.safe_load(file)
     return content
+
 def convert_to_java_options(data):
     java_options = []
     for key, value in data.items():
@@ -14,6 +36,7 @@ def convert_to_java_options(data):
         else:
             java_options.append(f'-D{key}={value}')
     return java_options
+
 def flatten_keys(dictionary, parent_key='', separator='.'):
     items = {}
     for k, v in dictionary.items():
@@ -23,8 +46,10 @@ def flatten_keys(dictionary, parent_key='', separator='.'):
         else:
             items[new_key] = v
     return items
+
 def remove_comments(lines):
     return [line for line in lines if not line.strip().startswith('#')]
+
 def main(yaml_file):
     lines = None
     with open(yaml_file, 'r') as file:
@@ -34,6 +59,7 @@ def main(yaml_file):
     data = load_yaml(yaml_file)
     java_options = convert_to_java_options(data)
     print(' '.join(java_options))
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: yml2opts <yaml_file>")
