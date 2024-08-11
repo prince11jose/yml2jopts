@@ -4,13 +4,13 @@ Title: YML to Java Options Converter
 Author: Prince Jose
 Email: prince11jose@hotmail.com
 Date Created: 2024-04-26
-Last Modified: 2024-06-15
+Last Modified: 2024-08-12
 Description: This script converts YAML configuration files into Java command-line options.
              It removes comments from the YAML file before processing and handles nested
              dictionaries by flattening the keys.
 
 Usage:
-    python yml2opts.py <yaml_file>
+    python yml2opts.py <yaml_file> [--newline]
 
 Dependencies:
     - PyYAML
@@ -50,7 +50,7 @@ def flatten_keys(dictionary, parent_key='', separator='.'):
 def remove_comments(lines):
     return [line for line in lines if not line.strip().startswith('#')]
 
-def main(yaml_file):
+def main(yaml_file, newline=False):
     lines = None
     with open(yaml_file, 'r') as file:
         lines = file.readlines()
@@ -58,11 +58,17 @@ def main(yaml_file):
     yaml_content = ''.join(lines)
     data = load_yaml(yaml_file)
     java_options = convert_to_java_options(data)
-    print(' '.join(java_options))
+
+    if newline:
+        print('\n'.join(java_options))
+    else:
+        print(' '.join(java_options))
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: yml2opts <yaml_file>")
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
+        print("Usage: yml2opts <yaml_file> [--newline]")
         sys.exit(1)
+
     yaml_file = sys.argv[1]
-    main(yaml_file)
+    newline = '--newline' in sys.argv
+    main(yaml_file, newline)
